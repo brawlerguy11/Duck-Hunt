@@ -1,0 +1,82 @@
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.IntStream;
+
+public class Interface {
+	private static long repetitions;
+	private static int[] check = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; 	  //Data for analyzing and eliminating repeats (-1 acts as a null value since duckShot[x] != -1.)
+	private static int[] duckShot = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};  //Data on duck shot 
+	private static int ducksAlive = 10; 						        	        //maximum number of victims
+	private static int[] survivals;									                  //Number that survive carnage
+	public static void main (String[] args) {
+		System.out.println("Number of Repetitions?");				            //Print question
+		Scanner Repeats = new Scanner(System.in);					              //Initialize human interface
+		repetitions = (int)Repeats.nextLong();							            //Assign value of repetitions integer
+    Repeats.close();									                              //Close user interface
+		survivals = new int[(int)repetitions];						              //Set length of array
+		for (int f=0; f<repetitions; f++) {							                //Repeat enclosed code the number of times assigned to "repetitions"
+			oneTrial();												
+			survivals[f] = ducksAlive;								                    //f represents trial #. survivals[trial number] = ducksAlive at end of trial
+			reset();												
+		}
+		average();													
+		frequencyAnalysis(0);										                        //For value of zero, i.e. no survivors muahaha
+		frequencyAnalysis(1);										                        //For 1 survivor
+		frequencyAnalysis(2);										                        //For 2 survivors
+		frequencyAnalysis(3);										                        //Etc.
+		frequencyAnalysis(4);										                        //Etc.
+		frequencyAnalysis(5);
+		frequencyAnalysis(6);
+		frequencyAnalysis(7);
+		frequencyAnalysis(8);
+		frequencyAnalysis(9);
+	}
+	
+	public static void calculateDucksAlive() {						             //Overall: find numbers of survivors by counting unique numbers and disregarding repeats
+		for (int h=0; h<10; h++) {                  				             //Repeatedly Take one value of h at a time...
+			for(int i = 0; i < 10; i++) {           				               //and take one value of i at a time
+				/*System.out.print(duckShot[h]);    				                 //(For analysis of checking method)
+				System.out.println(check[i]);*/     
+				if (duckShot[h] == check[i]) {      				                 //and compare value in array duckShot[h] to check[i]. If equal...
+					break;                        					                   //break for loop and move on to next value of h
+				}                                  					                 //else repeat and increment i (from i++ in conditionals)
+				if (i == 9) {                      					                 //If for loop for i is over and i==9, no repeats were found, so...
+					ducksAlive=ducksAlive-1;						                       //subtract 1 from ducksAlive value
+					check[h] = duckShot[h];							                       //and duckShot[h] value to check[h] to check for repeats of that value later.
+				}
+			}
+		}															                                
+	}
+	
+	public static void oneTrial() {									                   //Overall: RNG and call calculatedDucksAlive method
+		for (int g= 0; g< 10; g++) {
+			duckShot[g] = ThreadLocalRandom.current().nextInt(0,10);       //RNG across interval (0,10), rounding down to lowest integer
+		}
+		calculateDucksAlive();
+		//System.out.println(ducksAlive + " duck(s) survived"); 	       //For analysis of survivals
+	}
+	
+	public static void reset() {									                     //Overall: Reset values after each trial
+		for (int e=0; e<10; e++) {									                     //Change all values in each array to null values (I chose -1)
+			check[e] = -1;											                           //Change check array
+			duckShot[e] = -1;										                           //Change duckShot array
+		}
+		ducksAlive = 10;											                           //Replenish the victims
+	}
+  
+	public static void average() {									                   //Overall: Find average # of survivors
+		int sum = IntStream.of(survivals).sum();					               //Sum all numbers in array
+		float averageSurvivals = (float)sum/repetitions;			           //Sum / # of repetitions
+		System.out.println("Average is " +averageSurvivals);		         //Display info
+	}
+  
+	public static void frequencyAnalysis(int value) {				           //Overall: Analyze frequency of specific #'s of survivors ("value")
+		int freq = 0;												
+		for (int d=0; d < repetitions; d++) {						                 //Repeat for all values of d
+			if (survivals[d] == value) {							                     //Check if values of dth value in survivals array equals value
+				freq= freq + 1;										                           //Add one to frequency if true
+			}
+		}
+		System.out.println("Frequency of " + value + " is " + freq);//Display info
+	}
+}
