@@ -12,7 +12,7 @@ public class Interface {
 		System.out.println("Number of Repetitions?");			//Print question
 		Scanner Repeats = new Scanner(System.in);			//Initialize human interface
 		repetitions = (int)Repeats.nextLong();				//Assign value of repetitions integer
-    Repeats.close();								//Close user interface
+    	Repeats.close();							//Close user interface
 		survivals = new int[(int)repetitions];				//Set length of array
 		for (int f=0; f<repetitions; f++) {				//Repeat enclosed code the number of times assigned to "repetitions"
 			oneTrial();												
